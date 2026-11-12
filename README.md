@@ -1,8 +1,7 @@
-# Banking System
+# Digital Banking System
 
 A Java/Spring Boot microservices project for account management, money transfers, fraud checks, and payment processing. The services expose HTTP APIs and use Kafka events to coordinate asynchronous work. MySQL stores account, transaction, and payment data; Redis supports rate limiting and short-lived transaction verification data.
 
-**This project is not production-ready.**
 
 ## Architecture
 
@@ -117,43 +116,6 @@ The gateway routes `/api/v1/accounts/**`, `/api/v1/transactions/**`, and `/api/v
 - Service configuration currently contains local-development settings. Do not put production credentials in source control; use an appropriate secrets/configuration mechanism before deployment.
 
 ## Testing the whole project
-
-### Automated tests
-
-Start the infrastructure first, as application-context tests may initialize integrations that depend on it. Run the Maven verification phase for each independent service:
-
-```powershell
-$services = @(
-  "account-service",
-  "api-gateway",
-  "fraud-detection-service",
-  "notification-service",
-  "payment-service",
-  "transaction-service"
-)
-
-foreach ($service in $services) {
-  Push-Location $service
-  try {
-    & .\mvnw.cmd clean verify
-    if ($LASTEXITCODE -ne 0) {
-      throw "Verification failed for $service (exit code $LASTEXITCODE)"
-    }
-  }
-  finally {
-    Pop-Location
-  }
-}
-```
-
-To run just one service's tests, for example:
-
-```powershell
-Set-Location .\transaction-service
-.\mvnw.cmd test
-```
-
-Each service currently has a Spring application-context load test. These are useful build/startup checks, but they do **not** by themselves validate the complete transfer, fraud, payment-webhook, or notification flows.
 
 ### Postman API testing guide
 
